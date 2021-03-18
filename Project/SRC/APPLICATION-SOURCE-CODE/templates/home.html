@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+{% block title %} Cinema Bay  {% endblock %}
+{% block head %}
+<link rel="stylesheet" href="static/home.css">
+<link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Limelight&family=Staatliches&display=swap" rel="stylesheet">
+
+
+
+
+{% endblock %}
+
+{% block body %}
+
+
+<div id="background-carousel">
+    <div id="myCarousel" class="carousel slide" data-interval="10000" data-ride="carousel">
+        
+        <ol class="carousel-indicators">
+        {% for i in range((movies_posters|length)// 3) %}
+        <li id="carousel-indicator" data-target="#myCarousel" data-slide-to="{{i}}" class="{{ 'active' if loop.index|string == "1" }}"></li>
+        {% endfor %}
+        </ol>
+        
+
+        <div class="carousel-inner" role="listbox">
+        {% for row in movies_posters|batch(3) %}
+            <div class="carousel-item item {% if loop.index|string == '1' %} active {% endif %}">
+                <div class="row h-100">
+                    {% for movie in row %}
+                    <div class="col-md-4 p-0 {% if loop.index|string != '1' %} clearfix d-none d-md-block {% endif %}">
+                        <div class="card h-100">
+                            <a class="h-100" href="/search?query={{ movie['title'] }}">
+                                <img class="card-img h-100"  src= "{{movie['poster'] }}"
+                                alt="Card image cap">
+                            </a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endfor %}
+        </div>
+
+        <a class="carousel-control-prev" href="#myCarousel" role="button" data-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="sr-only">Previous</span>
+        </a>
+        <a class="carousel-control-next" href="#myCarousel" role="button" data-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="sr-only">Next</span>
+        </a>
+    </div>
+</div>
+
+<div class="container h-100" id="content-wrapper">
+
+
+    <div class="row h-100 justify-content-center align-items-center">
+
+        <div class="container">
+            <div class="row justify-content-center align-items-center">
+                <div class="col-12">
+                    <h1 class="text-light text-center" id="homeHeader">
+                        Cinema Bay
+                    </h1>
+                    <div id="textslide" class ="text-light text-center"> Welcome! Have Fun! </div>
+                </div>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <form id="formz" class="form" action="/search" method="GET">
+                        <div class="">
+                            <input class="form-control" id="searchBar" type="text" placeholder="Search for a movie or type anything if you feel lucky" required/>
+                        </div>
+                    </form>
+                        <div class="text-center mt-3">
+                            <input id="s" class="btn btn-success btn-lg" form="formz" type="submit" value="Search" name="query" onclick="changeVal('s')">
+                            <input id="l" class="btn btn-warning btn-lg" form="formz" type="submit" value="I Feel Lucky" name="text" onclick="changeVal('l')">
+                        </div>	
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+<script>
+
+    var born_this_month = {{ born_this_month|safe }};
+    
+    var i = 0;
+    let elem = $("#textslide");
+    setInterval(function() {
+        elem.fadeOut(function(){
+            elem.html("Famous actor born in this month: " + born_this_month[i]);
+            i++;
+            if(i >= born_this_month.length){ i=0; }
+            elem.fadeIn();
+        });}, 5 * 1000 );
+
+    function changeVal(id){
+        let val = $("#searchBar").val();
+        if(val != ""){
+            $("#"+id).val(val);
+        }
+    }
+
+</script>
+
+  {% endblock %}

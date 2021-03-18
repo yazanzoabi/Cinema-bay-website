@@ -1,0 +1,302 @@
+{% extends 'base.html' %}
+
+{% block title %} Cinema Bay  {% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="static/movie.css">
+<link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Limelight&family=Staatliches&display=swap" rel="stylesheet">
+
+{% endblock %}
+
+{% block body %}
+
+<nav id="topnav" class="navbar navbar-dark">
+	<div class="container-fluid">
+	  <a id="topnav-brand" href="/" class="navbar-brand"><img class="mr-2" src="static/favicon.png" alt="." height="40" width="40">Cinema Bay</a>
+	  <form class="d-flex" action="/search" method="GET">
+		<input class="form-control me-2 mr-2" id="searchBar" type="search" name="query" placeholder="Movie Search" aria-label="Search" required>
+		<button id="searchbtn" class="btn btn-success" type="submit">Search</button>
+	  </form>
+	</div>
+</nav>
+
+<!--------------------------------------------------------->
+
+<div class="container m-0 p-0 mw-100">
+	
+	<div class="row movie-container p-4">
+		<div class="col-lg-3  no-gutters  order-2">
+			<div id="accordion" class="col-12">
+				<div class="card" id="ac-card1">
+					<div class="card-header btn btn-info btn-lg collapsed text-center" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne" id="headingOne">
+					    A website by TAU students
+					</div>
+
+					<div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
+					    <div class="card-body">
+					        <p class="card-text">
+								<p class="text-center">Mohammad K</p>
+								<p class="text-center">Muhammad W</p>
+								<p class="text-center">Sumaya</p>
+								<p class="text-center">Yazan</p>
+							</p>
+					    </div>
+					</div>
+				</div>
+				<div class="card" id="Awards">
+					<div class="card-header btn btn-info btn-lg collapsed text-center" id="headingTwo" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+						Famous Awards
+					</div>
+					<div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
+					    <div class="card-body">
+							<p class="card-text">
+								{% if context['awards']|length < 1%}<h6 class="text-center">NO AWARDS</h6> {% endif %}
+								{% for award in context['awards'] %}
+									<h6 class="text-center">Awarded {{ award['count'] }} {{award['award'] }}{{'s' if award['count']|string != '1' else ''}}</h6>
+								{% endfor %}
+							</p>
+					     </div>
+					</div>
+				</div>
+
+					
+				<div class="card" id="ac-card3">
+					<div class="card-header btn btn-info btn-lg text-center" id="headingThree" data-toggle="collapse" data-target="#collapseThree" aria-expanded="true" aria-controls="collapseThree">
+					        Top Cast
+					</div>
+						
+					<div id="collapseThree" class="collapse show" aria-labelledby="headingThree" data-parent="#accordion">
+					    <div class="card-body" id="cast">
+							<div id="carouselExampleControls" class="carousel slide lazy-load" data-interval="7000" data-ride="carousel">
+								<div class="carousel-inner">
+								{% for actor in topcast %}
+									<div class="carousel-item {{ 'active' if loop.index|string == '1' }}">
+										<img id="actor" class="d-block w-100"  src= " {{ actor['image'] if actor['image'] != ' ' else "static/blank.png" }} " alt="blank" height="300">
+										<div class="d-block">
+											<h5 class="text-center">{{ actor["name"] }}</h5>
+											<h6 class="text-center" style="color: aquamarine;">Average Movie Rating: {{ (actor["avg"]|string)[:3]}} /10</h6>
+											<h6>Starred in:</h6>
+											{% for spec in actor['spec'] %}
+												<span>{{'|' if loop.index|string != '1' }} {{ spec }}</span>
+											{% endfor %}
+										</div>
+									</div>
+								{% endfor %}
+								</div>
+								<a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
+									<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+									<span class="sr-only">Previous</span>
+								</a>
+								<a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
+									<span class="carousel-control-next-icon" aria-hidden="true"></span>
+									<span class="sr-only">Next</span>
+								</a>
+							</div>
+					    </div>
+					</div>
+				</div>
+			</div>
+			<div class="card no-gutters" id="movieTrailer">
+				<iframe  src="{{ context['trailer'] }}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" style="height: 300px;" allowfullscreen></iframe>
+			</div>
+		</div>
+
+	
+		<div class="col-lg-6 order-lg-2">
+			<div class="col">
+			</div>
+			<div class ="col row-movie">
+				
+					
+					<div class="row no-gutters">
+				<div class="col-12">
+					<h2 class="movie-title" > {{ context['title'] }} </h2> <i class="fa fa-star" style="font-size:24px;"></i>{{ context['rating'] }}/10
+					<hr> 
+				</div>
+					<div class="col-12">
+						<img class="img-fluid float-right col-5" src="{{ context['image'] }}" height="200">
+					<p> {{ context['summary'] }} </p>	
+
+				</div>	
+				
+				 </div>
+  				<div class="card border-0" id="mid-navbar">
+					<div class="card-header" style="background-color: transparent; border-bottom-width:0px;">
+						<ul class="nav nav-tabs d-flex justify-content-between">
+							<li class="nav-item">
+								<button class="btn btn-outline-info collapsed"  data-toggle="collapse" data-target="#storyline" aria-pressed="true" aria-controls="storyline"><h6>Rankings</h6></button>
+							</li>
+							<li class="nav-item">
+								<button class="btn btn-outline-info collapsed" data-toggle="collapse" data-target="#tab2" aria-expanded="false" aria-controls="tab2"><h6>Did You Know?</h6></button>
+							</li>
+						</ul>
+					</div>
+					<div class="card-body">
+						<div class="collapse show" id="storyline" data-parent="#mid-navbar">
+							<div class="card border-0">
+								<div class="card-body">
+									<p class="card-text ">
+									{% for genre,rank in context['ranks'].items() %}
+										<h4 class="text-center">{{rank}}{%if rank|string == '1' %}<sub>st</sub>{% elif rank|string == '2' %}<sub>nd</sub>{% elif rank|string == '3' %}<sub>rd</sub>{% else %}<sub>th</sub>{% endif %} in {{ genre }}</h4> 
+									{% endfor %}
+									</p>
+								</div>
+							</div>
+						</div>
+						<div class="collapse" id="tab2" data-parent="#mid-navbar">
+							<div class="card border-0">
+								<div class="card-body">
+									<p  class="card-text">
+										<h6 class=""> Famous actors who had roles in {{ context['director'] }}'s movies: </h6>
+										<ul>
+										{% for actor in d_cast %}
+											<li class=""> {{actor}} </li> 
+										{% endfor %}
+										</ul>
+									</p>
+								</div>
+							</div>
+						</div>
+					</div> 
+				</div>
+			</div>
+				<div class="col-12 no-gutters">
+					
+				</div>
+		</div>
+	
+			
+			
+		<div class="col-lg-3 movie-RSD align-content-center order-3">
+			<div class="card">
+				<div class="card-body">
+					<h5 class="card-title">PREMIERE</h5>
+					<p class="card-text">{{ context['year'] }}</p>
+				</div>
+			</div>
+
+		<!--**********************************-->	
+			
+			<div class="card">
+				<div class="card-body">
+					<h5 class="card-title" >DIRECTOR</h5>
+					<p class="card-text">{{ context['director'] }}</p>
+				</div>
+			</div>
+
+		<!--**********************************-->	
+			
+			<div class="card">
+				<div class="card-body">
+					<h5 class="card-title">FILMING LOCATIONS</h5>
+					
+					<p class="card-text">
+						{% for location in context['locations'] %}
+							<span>{{'|' if loop.index|string != '1' }} {{ location }}</span>
+						{% endfor %}
+					</p>
+				</div>
+			</div>
+
+		<!--**********************************-->	
+
+			<div class="card">
+				<div class="card-body">
+					<h5 class="card-title">GENRE</h5>
+					<p class="card-text">
+						{% for genre in context['genres'] %}
+							<span>{{'|' if loop.index|string != '1' }} {{ genre }}</span>
+						{% endfor %}
+					</p>
+				</div>
+			</div>
+
+		<!--**********************************-->
+			<div class="card">
+				<div class="card-body">
+					<h5 class="card-title">STREAMING SERVICES</h5>
+					<p class="card-text">
+						{% for provider in context['providers'] %}
+							<span>{{'|' if loop.index|string != '1' }} {{ provider }} </span>
+						{% endfor %}
+					</p>
+				</div>
+			</div>
+			
+		<!--**********************************-->
+		{% if other_parts|length > 0 %}
+			<div class="card">
+				<div class="card-body">
+					<h5 class="card-title">RELATED MOVIES</h5>
+					<p class="card-text">
+						<ul>
+						{% for movie in other_parts %}
+						<a href="/search?query={{movie}}"><li class="partz" style="cursor: pointer;">{{ movie }}</li></a>
+						{% endfor %}
+						</ul>
+					</p>
+				</div>
+			</div>
+		{% endif %}
+		</div>
+	</div>
+</div>
+
+
+
+<h3 class="font-weight-light text-center mt-4 mb-3">More Movies Like This</h3>
+<div class="container col-md-9 col-7 mb-5">
+		<div id="myCarousel" class="carousel slide" data-ride="carousel">
+			
+			<ol class="carousel-indicators">
+			{% for i in range((recs|length)// 5 ) %}
+			<li id="carousel-indicator" data-target="#myCarousel" data-slide-to="{{i}}" class="{{ 'active' if loop.index|string == "1" }}"></li>
+			{% endfor %}
+			</ol>
+			
+			<div class="carousel-inner" role="listbox">
+			{% for row in recs|batch(5) %}
+				<div class="carousel-item item {% if loop.index|string == '1' %} active {% endif %}">
+					<div class="row justify-content-around h-100">
+						{% for movie in row %}
+						<div class="col-md-2 p-0 {% if loop.index|string != '1' %} clearfix d-none d-md-block {% endif %}">
+							<div class="card h-100">
+								<a class="h-100" href="/search?id={{ movie['id'] }}">
+									<img class="card-img h-100"  src="{{ movie['poster'] }}"
+									alt="Card image cap">
+								</a>
+							</div>
+						</div>
+						{% endfor %}
+
+					</div>
+				</div>
+			{% endfor %}
+			</div>
+
+			<a class="carousel-control-prev" href="#myCarousel" role="button" data-slide="prev" style="width: 5%;">
+				<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+				<span class="sr-only">Previous</span>
+			</a>
+			<a class="carousel-control-next" href="#myCarousel" role="button" data-slide="next" style="width: 5%;">
+				<span class="carousel-control-next-icon" aria-hidden="true"></span>
+				<span class="sr-only">Next</span>
+			</a>
+		</div>	
+</div>
+<!-- more like this carousel -->
+	<script>
+
+
+		function myFunction() {
+			var x = document.getElementById("myBtn").textContent;
+			if (x=="Read more") {
+				document.getElementById("myBtn").textContent="Read less";
+			} else{
+				document.getElementById("myBtn").textContent="Read more";
+			}
+		}
+	</script>
+	
+{% endblock %}

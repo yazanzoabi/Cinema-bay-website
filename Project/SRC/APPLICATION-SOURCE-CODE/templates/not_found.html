@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<link rel="stylesheet" href="static/not_found.css">
+<link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Limelight&family=Staatliches&display=swap" rel="stylesheet">
+
+
+{% endblock %}
+
+{% block body %}
+
+
+<div class="container h-100" id="content-wrapper">
+
+
+    <div class="row h-100 justify-content-center align-items-center">
+
+        <div class="container">
+            <div class="row justify-content-center align-items-center">
+                <div class="col-12">
+                    <h1 class="text-light text-center">
+                        We couldn't find '{{ query }}'
+                    </h1>
+                    <p class="text-light text-center"> Try choosing a movie from the suggestions given </p>
+                </div>
+            </div>
+            <div class="row justify-content-center">
+                <div>
+                    <a href="/"><button class="btn btn-primary btn-lg text-center">Go Back</button></a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+  {% endblock %}
